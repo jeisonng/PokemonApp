@@ -161,10 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginBottom: 3,
     marginHorizontal: 5,
-    shadowOffset: {width: 15, height: 15},
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 3,
+    elevation: 2,
   },
   moveTitle: {
     width: width * 0.9,
