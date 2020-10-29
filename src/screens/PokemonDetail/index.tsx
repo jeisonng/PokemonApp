@@ -137,7 +137,7 @@ const PokemonDetail: React.FC<Props> = (props) => {
             </View>
           );
         }}
-        keyExtractor={(item, key) => String(key)}
+        keyExtractor={(item, key) => String(Math.floor(Math.random() * 10000))}
       />
     </SafeAreaView>
   );
