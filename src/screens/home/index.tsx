@@ -88,7 +88,7 @@ const home: React.FC = ({}) => {
       <FlatList<Pokemons>
         data={pokemons}
         renderItem={({item}) => renderItem({item, navigation})}
-        keyExtractor={(item,key) => String(Math.floor(Math.random() * 10000))}
+        keyExtractor={(item,key) => String(Math.floor(Math.random() * 1000000000))}
         onEndReached={() => setIndex(index + 10)}
       />
     </SafeAreaView>
