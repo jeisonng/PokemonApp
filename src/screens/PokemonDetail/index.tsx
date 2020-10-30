@@ -30,6 +30,7 @@ interface PokemonDetail {
   photoUrl: string;
   moves: Moves[];
   types: Types[];
+  id:number;
 }
 
 interface Item {
@@ -57,13 +58,13 @@ const PokemonDetail: React.FC<Props> = (props) => {
       case 'fire':
         return '#cc0000';
       case 'flying':
-        return '#b3b3b3';
+        return '#f5e2e2';
       case 'water':
         return '#000099';
       case 'bug':
         return '#009900';
       case 'steel':
-        return '#cccccc';
+        return '#e4e2e2';
       case 'dragon':
         return '#b36b00';
     }
@@ -83,11 +84,13 @@ const PokemonDetail: React.FC<Props> = (props) => {
         });
         const photoUrl: string = data.sprites.front_default;
         const name: string = data.name;
+        const id: number = data.id;
         const pokemon: PokemonDetail = {
           name,
           photoUrl,
           moves,
           types,
+          id
         };
         setPokemon(pokemon);
         setLoading(false);
@@ -107,25 +110,38 @@ const PokemonDetail: React.FC<Props> = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        style={styles.image}
-        resizeMode="stretch"
-        source={{
-          uri: pokemon?.photoUrl,
-        }}
-      />
-      <Text style={styles.name}>{pokemon?.name.toUpperCase()}</Text>
-      <View style={styles.containerType}>
-        {pokemon?.types.map((e, key) => {
-          return (
-            <Text style={{color: selectColor(e.name)}}>
-              {e.name}
-              <Text style={{color: 'black'}}>
-                {key === pokemon.types.length - 1 ? '' : ' / '}
+      <View style={styles.cardContainer}>
+        <View
+          style={{
+            alignSelf: 'flex-start',
+            backgroundColor: 'tomato',
+            marginLeft: -5,
+            marginTop: -5,
+            padding: 5,
+            borderTopStartRadius:5
+          }}>
+          <Text>#{pokemon?.id}</Text>
+        </View>
+        <Image
+          style={styles.image}
+          resizeMode="stretch"
+          source={{
+            uri: pokemon?.photoUrl,
+          }}
+        />
+        <Text style={styles.name}>{pokemon?.name.toUpperCase()}</Text>
+        <View style={styles.containerType}>
+          {pokemon?.types.map((e, key) => {
+            return (
+              <Text style={{color: selectColor(e.name)}}>
+                {e.name}
+                <Text style={{color: 'black'}}>
+                  {key === pokemon.types.length - 1 ? '' : ' / '}
+                </Text>
               </Text>
-            </Text>
-          );
-        })}
+            );
+          })}
+        </View>
       </View>
       <Text style={styles.moveTitle}>Movimentos</Text>
       <FlatList<Moves>
@@ -137,7 +153,9 @@ const PokemonDetail: React.FC<Props> = (props) => {
             </View>
           );
         }}
-        keyExtractor={(item, key) => String(Math.floor(Math.random() * 1000000000))}
+        keyExtractor={(item, key) =>
+          String(Math.floor(Math.random() * 1000000000))
+        }
       />
     </SafeAreaView>
   );
@@ -170,12 +188,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   name: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
+    color: 'tomato',
   },
   containerType: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  cardContainer: {
+    marginTop: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+    backgroundColor: '#737373',
   },
 });
 
