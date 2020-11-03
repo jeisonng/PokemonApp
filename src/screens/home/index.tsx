@@ -13,6 +13,8 @@ import {
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import * as routes from '../../Routes/consts';
+import ListItem from '../../Components/ListItem';
+import * as _ from 'lodash';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -39,7 +41,7 @@ const Item: React.FC<Item> = (item) => (
 
 const renderItem: React.FC<Nav> = ({item, navigation}) => {
   return (
-    <Item
+    <ListItem
       item={item}
       onPress={() => {
         navigation.navigate(routes.POKEMON_DETAIL, {item});
@@ -50,30 +52,36 @@ const renderItem: React.FC<Nav> = ({item, navigation}) => {
 
 const home: React.FC = ({}) => {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [pokemons, setPokemons] = useState<Pokemons[]>([]);
   const [index, setIndex] = useState<number>(0);
 
   async function getPokemons(num?: Number) {
     try {
-      setLoading(true);
       const {data} = await axios.get(
         `https://pokeapi.co/api/v2/pokemon?offset=${num || 0}&limit=10`,
       );
       const results: Pokemons[] = data.results;
-      setPokemons(pokemons.concat(results).sort());
+      setPokemons(_.unionBy(pokemons.concat(results),'name'));
       setLoading(false);
+      setRefreshing(false);
     } catch (error) {
+      setRefreshing(false);
       setLoading(false);
     }
   }
 
   useEffect(() => {
+    setLoading(true);
     getPokemons();
+    return
   }, []);
 
   useEffect(() => {
+    setRefreshing(true);
     getPokemons(index);
+    return
   }, [index]);
 
   if (loading)
@@ -86,10 +94,22 @@ const home: React.FC = ({}) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList<Pokemons>
+        refreshing={refreshing}
         data={pokemons}
         renderItem={({item}) => renderItem({item, navigation})}
-        keyExtractor={(item,key) => String(Math.floor(Math.random() * 1000000000))}
+        keyExtractor={(item, key) =>
+          String(item.name)
+        }
         onEndReached={() => setIndex(index + 10)}
+        ListFooterComponent={() => {
+          if (refreshing)
+            return (
+              <View style={{justifyContent: 'center', width:width,height:20}}>
+                <ActivityIndicator color="green" size="large" />
+              </View>
+            );
+          return <View />;
+        }}
       />
     </SafeAreaView>
   );
@@ -102,16 +122,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     width: width * 0.9,
-    borderRadius:3,
-    shadowOffset:{width:1,height:1},
-    shadowOpacity:0.3,
-    shadowRadius:5,
-    shadowColor:'black',
-    elevation:2
+    borderRadius: 3,
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowColor: 'black',
+    elevation: 2,
   },
   title: {
     fontSize: 32,
-    fontWeight:'bold'
+    fontWeight: 'bold',
   },
 });
 

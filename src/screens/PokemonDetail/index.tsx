@@ -118,7 +118,8 @@ const PokemonDetail: React.FC<Props> = (props) => {
             marginLeft: -5,
             marginTop: -5,
             padding: 5,
-            borderTopStartRadius:5
+            borderTopStartRadius:5,
+            borderBottomRightRadius:5
           }}>
           <Text>#{pokemon?.id}</Text>
         </View>
@@ -154,7 +155,7 @@ const PokemonDetail: React.FC<Props> = (props) => {
           );
         }}
         keyExtractor={(item, key) =>
-          String(Math.floor(Math.random() * 1000000000))
+          String(key+item.name)
         }
       />
     </SafeAreaView>
